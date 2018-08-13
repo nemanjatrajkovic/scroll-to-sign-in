@@ -23,6 +23,8 @@ import android.widget.TextView
 
 import java.util.ArrayList
 import android.Manifest.permission.READ_CONTACTS
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.os.Handler
 import android.util.Log
 import android.widget.ScrollView
@@ -58,8 +60,10 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
             Log.v("Nemanja password", login_form.scrollY.toString())
             if (hasFocus) {
                 val handler = Handler()
-                handler.postDelayed({login_form
-                        .smoothScrollBy(0, scrollYTarget(login_form)) }, 300)
+                handler.postDelayed({
+//                    login_form.smoothScrollBy(0, scrollYTarget(login_form))
+                    scrollToTop(login_form, scrollYTarget(login_form))
+                }, 60)
             }
         }
 
@@ -67,6 +71,17 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
 
     private fun scrollYTarget(scrollView:ScrollView) : Int {
         return scrollView.getChildAt(scrollView.childCount - 1).bottom - scrollView.height
+    }
+
+    private fun scrollToTop(scrollView: ScrollView, y:Int) {
+        val x = 0
+        val xTranslate = ObjectAnimator.ofInt(scrollView, "scrollX", x);
+        val yTranslate = ObjectAnimator.ofInt(scrollView, "scrollY", y);
+
+        val animators = AnimatorSet()
+        animators.duration = 400L
+        animators.playTogether(xTranslate, yTranslate)
+        animators.start()
     }
 
     private fun populateAutoComplete() {
